@@ -2,19 +2,26 @@ package com.triton.order.service;
 
 import com.triton.order.client.InventoryClient;
 import com.triton.order.dto.OrderRequestDTO;
+import com.triton.order.event.OrderPlacedEvent;
 import com.triton.order.model.Order;
 import com.triton.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final InventoryClient inventoryClient;
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
+
     public void placeOrder(OrderRequestDTO orderRequestDTO){
         boolean isProductInStock = inventoryClient.isInStock(orderRequestDTO.skuCode(), orderRequestDTO.quantity());
         if(!isProductInStock){
@@ -32,5 +39,9 @@ public class OrderService {
 
         // save order to orderRepository
         orderRepository.save(order);
+
+        // send the message to Kafka Topic
+        OrderPlacedEvent event = new OrderPlacedEvent(order.getOrderNumber(), orderRequestDTO.userDetails().email());
+        kafkaTemplate.send("order-placed", event);
     }
 }
