@@ -18,11 +18,22 @@ public class ProductService {
         Product product = Product.builder()
                 .name(productRequest.name())
                 .description(productRequest.description())
+                .skuCode(productRequest.skuCode())
                 .price(productRequest.price())
                 .build();
 
         productRepository.save(product);
         return product;
+    }
+
+    public Product[] createProducts(ProductRequest[] productRequestArray){
+        int size = productRequestArray.length;
+        Product[] products = new Product[size];
+        for(int i=0; i<size; i++){
+            products[i]=createProduct(productRequestArray[i]);
+        }
+
+        return products;
     }
 
     public List<ProductResponse> getAllProducts() {
@@ -33,6 +44,7 @@ public class ProductService {
                                                             new ProductResponse(
                                                                     product.getId(),
                                                                     product.getName(),
+                                                                    product.getSkuCode(),
                                                                     product.getDescription(),
                                                                     product.getPrice()
                                                             )

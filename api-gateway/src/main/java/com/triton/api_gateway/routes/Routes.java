@@ -20,7 +20,7 @@ public class Routes {
     @Bean
     public RouterFunction<ServerResponse> productRouteMatcher() {
         return GatewayRouterFunctions.route("product_service")
-                .route(RequestPredicates.path("api/product"), HandlerFunctions.http("http://localhost:8081"))
+                .route(RequestPredicates.path("api/product/**"), HandlerFunctions.http("http://localhost:8081"))
                 .filter(
                         CircuitBreakerFilterFunctions.circuitBreaker(
                                 "productServiceCircuitBreaker",

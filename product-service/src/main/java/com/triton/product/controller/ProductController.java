@@ -29,6 +29,12 @@ public class ProductController {
         return productService.createProduct(productRequest);
     }
 
+    @PostMapping("/multipleCreate")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product[] createProducts(@RequestBody ProductRequest[] productRequestArray){
+        return productService.createProducts(productRequestArray);
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ProductResponse> getAllProducts(){
