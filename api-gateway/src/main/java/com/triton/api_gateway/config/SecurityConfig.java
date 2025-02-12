@@ -27,6 +27,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()     // it means that any request coming needs to be authorised
         ).oauth2ResourceServer(
                 oauth2 -> oauth2.jwt(Customizer.withDefaults())     // it means that request will be validated on basis of jwt tokens
-        ).build();
+        ).cors(Customizer.withDefaults()).build();
     }
 }
