@@ -17,13 +17,9 @@ public class NotificationService {
 
     private final JavaMailSender javaMailSender;
 
-//    public NotificationService(JavaMailSender javaMailSender) {
-//        this.javaMailSender = javaMailSender;
-//    }
-
     @KafkaListener(topics = "order-placed")
     public void listenOrderPlaced(OrderPlacedEvent orderPlacedEvent) {
-        //log.info("Got message from order-placed topic {}", orderPlacedEvent);
+        log.info("Got message from order-placed topic {}", orderPlacedEvent);
 
         // Send email to customer emailAddress
         MimeMessagePreparator messagePreparator = new MimeMessagePreparator() {
@@ -31,8 +27,8 @@ public class NotificationService {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setFrom("no-reply@triton.com");
-                messageHelper.setTo(orderPlacedEvent.getEmail());
-                messageHelper.setSubject("Info regarding your order with OrderNumber " + orderPlacedEvent.getOrderNumber());
+                messageHelper.setTo(orderPlacedEvent.getEmail().toString());
+                messageHelper.setSubject("Info regarding your order with OrderNumber " + orderPlacedEvent.getOrderNumber().toString());
                 messageHelper.setText(String.format("""
                         Greetings,
                         
@@ -40,15 +36,15 @@ public class NotificationService {
                         
                         Happy shopping!
                         Triton 
-                        """, orderPlacedEvent.getOrderNumber()));
+                        """, orderPlacedEvent.getOrderNumber().toString()));
             }
         };
         try {
             javaMailSender.send(messagePreparator);
-            //log.info("Email sent to {}", orderPlacedEvent.getEmail());
+            log.info("Email sent to {}", orderPlacedEvent.getEmail());
         }
         catch (Exception e){
-            //log.error("Failed to send email to {} ", orderPlacedEvent.getEmail());
+            log.error("Failed to send email to {} ", orderPlacedEvent.getEmail());
             throw new RuntimeException(e);
         }
     }
