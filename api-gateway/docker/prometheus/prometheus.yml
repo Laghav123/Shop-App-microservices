@@ -1,0 +1,32 @@
+global:
+  scrape_interval: 2s
+  evaluation_interval: 2s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9091']
+  - job_name: 'product-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8081']  ## only for dev purpose, don't use host.docker.internal in prod
+        labels:
+          application: 'Product Service'
+  - job_name: 'order-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8082']  ## only for dev purpose, don't use host.docker.internal in prod
+        labels:
+          application: 'Order Service'
+  - job_name: 'inventory-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8083']  ## only for dev purpose, don't use host.docker.internal in prod
+        labels:
+          application: 'Inventory Service'
+  - job_name: 'notification-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8084']  ## only for dev purpose, don't use host.docker.internal in prod
+        labels:
+          application: 'Notification Service'

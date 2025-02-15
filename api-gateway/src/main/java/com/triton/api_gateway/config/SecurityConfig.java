@@ -14,7 +14,8 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/api-docs/**",
             "/swagger-resources/**",
-            "/aggregate/**"
+            "/aggregate/**",
+            "/actuator/prometheus",
     };
 
     // SecurityFilterChain becomes kind of middleware for security
